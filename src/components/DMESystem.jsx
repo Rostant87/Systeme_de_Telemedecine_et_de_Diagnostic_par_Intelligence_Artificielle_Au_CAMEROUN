@@ -20,31 +20,49 @@ export default function DMESystem() {
 
   const addPatient = (e) => {
     e.preventDefault()
-    if (!newPatient.nom || !newPatient.age) {
-      alert('Veuillez remplir tous les champs')
+    if (!newPatient.nom.trim() || !newPatient.age) {
+      alert('Veuillez remplir tous les champs obligatoires')
       return
     }
 
-    const patientRecord = {
-      id: `DME${String(patients.length + 1).padStart(3, '0')}`,
-      ...newPatient,
-      dateCreation: new Date().toISOString(),
-      status: 'Nouveau'
+    if (isNaN(parseInt(newPatient.age)) || parseInt(newPatient.age) < 0) {
+      alert('Âge invalide')
+      return
     }
 
-    const updated = [...patients, patientRecord]
-    setPatients(updated)
-    localStorage.setItem('dmePatients', JSON.stringify(updated))
-    
-    setNewPatient({ nom: '', age: '', sexe: '', village: '', telephone: '' })
-    alert('✅ Patient ajouté avec succès!')
+    try {
+      const patientRecord = {
+        id: `DME${String(patients.length + 1).padStart(3, '0')}`,
+        nom: newPatient.nom.trim(),
+        age: parseInt(newPatient.age),
+        sexe: newPatient.sexe || 'Non spécifié',
+        village: newPatient.village.trim(),
+        telephone: newPatient.telephone.trim(),
+        dateCreation: new Date().toISOString(),
+        status: 'Nouveau'
+      }
+
+      const updated = [...patients, patientRecord]
+      setPatients(updated)
+      localStorage.setItem('dmePatients', JSON.stringify(updated))
+      
+      setNewPatient({ nom: '', age: '', sexe: '', village: '', telephone: '' })
+      alert('✅ Patient ajouté avec succès!')
+    } catch (err) {
+      alert('❌ Erreur lors de l\'ajout: ' + err.message)
+    }
   }
 
   const deletePatient = (id) => {
     if (!confirm('Confirmer la suppression?')) return
-    const updated = patients.filter(p => p.id !== id)
-    setPatients(updated)
-    localStorage.setItem('dmePatients', JSON.stringify(updated))
+    try {
+      const updated = patients.filter(p => p.id !== id)
+      setPatients(updated)
+      localStorage.setItem('dmePatients', JSON.stringify(updated))
+      alert('✅ Patient supprimé')
+    } catch (err) {
+      alert('❌ Erreur lors de la suppression: ' + err.message)
+    }
   }
 
   const openPatient = (patient) => {
