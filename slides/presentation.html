@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Présentation Projet ASR - Télémédecine IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+        
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            color: white;
+            text-align: center;
+        }
+        
+        .slide h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .slide h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #FCD116;
+        }
+        
+        .slide p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .flag {
+            display: flex;
+            width: 300px;
+            height: 200px;
+            margin: 20px auto;
+        }
+        
+        .flag div {
+            flex: 1;
+        }
+        
+        .green { background: #007A3D; }
+        .red { background: #CE1126; }
+        .yellow { background: #FCD116; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+            max-width: 900px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FCD116;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .tech-item {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255,255,255,0.4);
+        }
+        
+        .slide:nth-child(2) { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .slide:nth-child(3) { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .slide:nth-child(4) { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .slide:nth-child(5) { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .slide:nth-child(6) { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        
+        ul {
+            text-align: left;
+            max-width: 700px;
+            margin: 20px auto;
+            font-size: 1.2rem;
+        }
+        
+        li {
+            margin: 15px 0;
+            padding-left: 10px;
+        }
+        
+        .highlight {
+            color: #FCD116;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="flag">
+            <div class="green"></div>
+            <div class="red"></div>
+            <div class="yellow"></div>
+        </div>
+        <h1>Système de Télémédecine et de Diagnostic par Intelligence Artificielle</h1>
+        <p>Projet ASR - Agent de Santé Rural</p>
+        <p style="font-size: 1.5rem; margin-top: 30px;">Zones Rurales du Cameroun 🇨🇲</p>
+    </div>
+
+    <div class="slide">
+        <h2>🎯 Problématique</h2>
+        <p>La désertification médicale et le manque de ressources spécialisées dans les zones rurales du Cameroun constituent un obstacle majeur à la santé publique et au développement.</p>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">1:10,000</div>
+                <p>Ratio médecin/habitant en zone rurale</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">85%</div>
+                <p>Population rurale sans accès spécialistes</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50km+</div>
+                <p>Distance moyenne vers centre de santé</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">60%</div>
+                <p>Mortalité infantile évitable</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide">
+        <h2>💡 Notre Solution</h2>
+        <p>Un système mobile-first combinant:</p>
+        <ul>
+            <li>📱 <span class="highlight">Diagnostic assisté par IA</span> (TensorFlow.js + MobileNet)</li>
+            <li>🌐 <span class="highlight">Réseau P2P décentralisé</span> (Wi-Fi Direct / Bluetooth)</li>
+            <li>🏥 <span class="highlight">Téléconsultation</span> avec médecins spécialistes</li>
+            <li>📋 <span class="highlight">DME national</span> (Dossier Médical Électronique)</li>
+            <li>🔋 <span class="highlight">Autonomie complète</span> (kit solaire 48h)</li>
+            <li>💾 <span class="highlight">Offline-First</span> (fonctionne sans internet)</li>
+        </ul>
+    </div>
+
+    <div class="slide">
+        <h2>🛠️ Stack Technologique</h2>
+        <p>100% Gratuit et Open-Source</p>
+        <div class="tech-stack">
+            <div class="tech-item">React 18.3</div>
+            <div class="tech-item">TensorFlow.js</div>
+            <div class="tech-item">MobileNetV3</div>
+            <div class="tech-item">Vite</div>
+            <div class="tech-item">Tailwind CSS</div>
+            <div class="tech-item">IndexedDB</div>
+            <div class="tech-item">Canvas API</div>
+            <div class="tech-item">Lucide React</div>
+            <div class="tech-item">Recharts</div>
+        </div>
+        <p style="margin-top: 40px;">Architecture: <span class="highlight">Mobile-First • PWA • Edge Computing</span></p>
+    </div>
+
+    <div class="slide">
+        <h2>📊 Impact Projeté (3 ans)</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">200</div>
+                <p>Centres équipés</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">800</div>
+                <p>ASR formés</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">25,000</div>
+                <p>Téléconsultations/an</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">500,000</div>
+                <p>DME créés</p>
+            </div>
+        </div>
+        <p style="margin-top: 40px; font-size: 1.5rem;">
+            <span class="highlight">-20% DALY</span> • 
+            <span class="highlight">-30% Évacuations</span> • 
+            <span class="highlight">-15% Mortalité infantile</span>
+        </p>
+    </div>
+
+    <div class="slide">
+        <h2>🚀 Conclusion</h2>
+        <p>Le système proposé représente une transformation profonde de la médecine rurale au Cameroun en s'appuyant sur l'IA, la télémédecine et une architecture résiliente.</p>
+        <p style="margin-top: 30px;">Avec une réduction attendue de <span class="highlight">15% de la mortalité infantile et maternelle</span> et la création de <span class="highlight">500,000 DME</span>, il positionnera le pays comme un leader de l'innovation HealthTech en Afrique.</p>
+        <p style="margin-top: 40px; font-size: 2rem; color: #FCD116;">🇨🇲 Santé pour Tous • Innovation Africaine 🇨🇲</p>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function showSlide(n) {
+            slides[currentSlide].style.display = 'none';
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].style.display = 'flex';
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') showSlide(currentSlide + 1);
+            if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+        });
+        
+        slides.forEach((slide, index) => {
+            if (index !== 0) slide.style.display = 'none';
+            slide.addEventListener('click', () => showSlide(currentSlide + 1));
+        });
+    </script>
+</body>
+</html>
