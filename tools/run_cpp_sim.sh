@@ -15,44 +15,40 @@ if [ ! -f "$SIM" ]; then
 fi
 
 if [ -z "${NS3_DIR:-}" ]; then
-  # Try to auto-detect NS3_DIR by looking for a waf file in common locations
-  for candidate in "$HOME" "$HOME/ns-*" "$HOME/ns-allinone*" "$HOME/Downloads/ns-*" "$PWD/.."; do
-    [ -z "$candidate" ] && continue
-    if [ -f "$candidate/waf" ]; then
-      NS3_DIR="$candidate"
-      break
-    fi
-    # search up to 3 levels deep for a waf executable inside likely ns-3 installs
-    # prefer waf paths that include 'ns-3' in the path
+  # Try to auto-detect NS3_DIR by looking for a waf file in common locations, prefer $HOME
+  echo "NS3_DIR not set, scanning common locations under $HOME and Downloads..."
+  wafpath=""
+  # look for ns-3 or ns-allinone installations under $HOME first
+  while IFS= read -r -d '' candidate; do
     wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | grep -E '/ns-3[^/]*' | head -n1 || true)
-    if [ -z "$wafpath" ]; then
-      wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | head -n1 || true)
-    fi
-    if [ -n "$wafpath" ]; then
-      candidate_dir=$(dirname "$wafpath")
-      # prefer paths that contain 'ns-3' in the name
-      if [[ "$candidate_dir" == *ns-3* ]]; then
-        NS3_DIR="$candidate_dir"
-        break
-      fi
-      # verify this looks like an ns-3 root (has scratch, src or wscript)
-      if [ -d "$candidate_dir/scratch" ] || [ -f "$candidate_dir/wscript" ] || [ -d "$candidate_dir/src" ]; then
-        NS3_DIR="$candidate_dir"
-        break
-      fi
-      # try parent dir as some installs nest ns-3 one level up
+    [ -n "$wafpath" ] && break
+    wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | head -n1 || true)
+    [ -n "$wafpath" ] && break
+  done < <(printf "%s\0" "$HOME" "$HOME/ns-*" "$HOME/ns-allinone*" "$HOME/Downloads/ns-*" 2>/dev/null)
+
+  if [ -z "$wafpath" ]; then
+    # last resort: try the parent project paths (repo sibling)
+    wafpath=$(find "$PWD" -maxdepth 3 -type f -name waf 2>/dev/null | head -n1 || true)
+  fi
+
+  if [ -n "$wafpath" ]; then
+    candidate_dir=$(dirname "$wafpath")
+    # prefer the ns-3 root folder (waf may be inside a subdir); try parent
+    if [ -d "$candidate_dir/scratch" ] || [ -f "$candidate_dir/wscript" ] || [ -d "$candidate_dir/src" ]; then
+      NS3_DIR="$candidate_dir"
+    else
+      # try parent
       parent=$(dirname "$candidate_dir")
       if [ -d "$parent/scratch" ] || [ -f "$parent/wscript" ] || [ -d "$parent/src" ]; then
         NS3_DIR="$parent"
-        break
+      else
+        NS3_DIR="$candidate_dir"
       fi
     fi
-  done
-  if [ -z "${NS3_DIR:-}" ]; then
-    echo "Please set NS3_DIR to your ns-3 installation root (where ./waf is located). Tried auto-detection and failed." >&2
-    exit 4
-  else
     echo "Auto-detected NS3_DIR=$NS3_DIR"
+  else
+    echo "Please set NS3_DIR to your ns-3 installation root (where ./waf is located). Tried auto-detection under $HOME and Downloads and failed." >&2
+    exit 4
   fi
 fi
 

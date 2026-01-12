@@ -1,12 +1,36 @@
-.PHONY: run-python run-cpp
+.PHONY: build clean run test help
 
-run-python:
-	# usage: make run-python FILE=ns-3/sim-*.py
-	if [ -z "$(FILE)" ]; then echo "Provide FILE variable, e.g., make run-python FILE=ns-3/sim-1768229256366.py"; exit 1; fi
-	bash tools/run_python_sim.sh "$(FILE)"
+help:
+	@echo "╔════════════════════════════════════════════════════════╗"
+	@echo "║    🔥 Telemedicine System - C++ ONLY                  ║"
+	@echo "╚════════════════════════════════════════════════════════╝"
+	@echo ""
+	@echo "Commandes disponibles:"
+	@echo "  make build     - Compiler l'application C++"
+	@echo "  make run       - Exécuter l'application"
+	@echo "  make test      - Tester l'application"
+	@echo "  make clean     - Nettoyer les artefacts"
+	@echo "  make help      - Afficher ce message"
+	@echo ""
+	@echo "Exemples:"
+	@echo "  make build && make run"
+	@echo "  make clean"
 
-run-cpp:
-	# usage: make run-cpp FILE=ns-3/scratch/sim-*.cc NS3_DIR=/path/to/ns-3
-	if [ -z "$(FILE)" ]; then echo "Provide FILE variable, e.g., make run-cpp FILE=ns-3/scratch/sim-1768228681778.cc NS3_DIR=/path/to/ns-3"; exit 1; fi
-	if [ -z "$(NS3_DIR)" ]; then echo "Provide NS3_DIR variable, e.g., NS3_DIR=/home/user/ns-3"; exit 1; fi
-	bash tools/run_cpp_sim.sh "$(FILE)"
+build:
+	@echo "Compilation de l'application C++..."
+	cd cpp-project && bash build.sh
+
+run: build
+	@echo "Exécution de l'application..."
+	cpp-project/build/telemedicine_app
+
+test: build
+	@echo "Tests..."
+	cpp-project/build/telemedicine_app | grep "All modules initialized"
+
+clean:
+	@echo "Nettoyage des artefacts..."
+	rm -rf cpp-project/build
+	@echo "✓ Nettoyage terminé"
+
+.DEFAULT_GOAL := help

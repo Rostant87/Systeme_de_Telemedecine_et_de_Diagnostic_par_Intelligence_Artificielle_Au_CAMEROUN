@@ -1,16 +1,16 @@
-# Virtual environments
-venv/
-.venv/
-env/
-.ns3-venv/
-conda-env/
+# C++ Build
+cpp-project/build/
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.dll
 
-# Build directories
-build/
-build-debug/
-build-release/
-dist/
-*.egg-info/
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
 
 # IDE
 .vscode/
@@ -20,21 +20,25 @@ dist/
 *~
 .DS_Store
 
-# Binary files
-*.o
-*.a
-*.so
-*.dll
-*.exe
+# Archives
+*.tar.gz
+*.zip
 
-# CMake
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-Makefile
+# Python cache
+__pycache__/
+*.pyc
+.mypy_cache/
+.pytest_cache/
 
-# Node modules
+# Node/React (deprecated, kept for history)
 node_modules/
+dist/
+.next/
 
-# OS
+# ns-3 (external project)
 ns-3/
+ns-allinone-*/
+
+# Backups
+backups/
+archived_*/

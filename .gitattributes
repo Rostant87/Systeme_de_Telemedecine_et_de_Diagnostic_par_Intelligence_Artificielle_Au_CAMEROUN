@@ -1,0 +1,19 @@
+# C++ Source Files
+*.cpp text eol=lf diff=cpp
+*.h text eol=lf diff=cpp
+*.hpp text eol=lf diff=cpp
+
+# CMake
+CMakeLists.txt text eol=lf
+*.cmake text eol=lf
+
+# Shell Scripts
+*.sh text eol=lf
+Makefile text eol=lf
+
+# Documentation
+*.md text eol=lf
+
+# Binary files
+*.a binary
+*.o binary
