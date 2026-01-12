@@ -23,7 +23,11 @@ if [ -z "${NS3_DIR:-}" ]; then
       break
     fi
     # search up to 3 levels deep for a waf executable inside likely ns-3 installs
-    wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | head -n1 || true)
+    # prefer waf paths that include 'ns-3' in the path
+    wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | grep -E '/ns-3[^/]*' | head -n1 || true)
+    if [ -z "$wafpath" ]; then
+      wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | head -n1 || true)
+    fi
     if [ -n "$wafpath" ]; then
       candidate_dir=$(dirname "$wafpath")
       # prefer paths that contain 'ns-3' in the name
