@@ -81,7 +81,43 @@ if [ -n "$LIBDIR" ]; then
   export LD_LIBRARY_PATH="$LIBDIR${LD_LIBRARY_PATH:+":$LD_LIBRARY_PATH"}"
 fi
 
-if python3 "$SIM"; then
+run_with_python(){
+  PYEXEC="$1"
+  "$PYEXEC" "$SIM"
+}
+
+# Check whether Cppyy is available; if not, try to create/use a local venv and install it there.
+check_cppyy_and_run(){
+  # quick import test
+  if PYTHONPATH="$PYDIR" LD_LIBRARY_PATH="$LIBDIR" python3 -c "import cppyy" 2>/dev/null; then
+    run_with_python python3 && return 0
+  fi
+
+  VENV_DIR="$PWD/.ns3-venv"
+  if [ -x "$VENV_DIR/bin/python" ]; then
+    echo "Using existing venv at $VENV_DIR"
+  else
+    echo "Creating venv at $VENV_DIR to install required Python packages (cppyy)"
+    python3 -m venv "$VENV_DIR"
+    if [ ! -x "$VENV_DIR/bin/python" ]; then
+      echo "Failed to create venv. Please install cppyy in your environment or use system packaging." >&2
+      return 2
+    fi
+    echo "Installing cppyy in the venv (this may take a while)..."
+    "$VENV_DIR/bin/pip" install --upgrade pip setuptools wheel >/dev/null
+    if ! "$VENV_DIR/bin/pip" install cppyy >/dev/null; then
+      echo "Failed to install cppyy into venv. Inspect $VENV_DIR for details." >&2
+      return 2
+    fi
+  fi
+
+  # Run with venv python
+  PYEXEC="$VENV_DIR/bin/python"
+  PYTHONPATH="$PYDIR" LD_LIBRARY_PATH="$LIBDIR" "$PYEXEC" "$SIM"
+  return $?
+}
+
+if check_cppyy_and_run; then
   echo "Execution finished"
 else
   echo "Execution failed. Ensure ns-3 Python bindings are installed and PYTHONPATH is configured (try: export NS3_PYTHON_PATH=/path/to/ns-3/bindings/python)." >&2
