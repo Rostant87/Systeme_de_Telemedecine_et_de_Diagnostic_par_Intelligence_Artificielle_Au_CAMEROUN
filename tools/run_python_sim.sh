@@ -20,9 +20,9 @@ if [ -n "${NS3_PYTHON_PATH:-}" ]; then
   PYDIR="$NS3_PYTHON_PATH"
 else
   PYDIR=""
+  # First pass: look specifically for a proper ns package (ns/__init__.py)
   for base in "$HOME"/ns-* "$HOME"/ns-allinone* "$HOME"/Downloads/ns-* "$PWD"/ns-3; do
     [ -z "$base" ] && continue
-    # Prefer explicit ns package dir with __init__.py
     if [ -f "$base/build/bindings/python/ns/__init__.py" ]; then
       PYDIR="$base/build/bindings/python"
       break
@@ -31,20 +31,26 @@ else
       PYDIR="$base/bindings/python"
       break
     fi
-    if [ -d "$base/bindings/python" ]; then
-      PYDIR="$base/bindings/python"
-      break
-    fi
-    if [ -d "$base/build/bindings/python" ]; then
-      PYDIR="$base/build/bindings/python"
-      break
-    fi
-    if [ -d "$base/build-support/pip-wheel" ]; then
-      # pip-wheel may contain a top-level 'ns' directory
-      PYDIR="$base/build-support/pip-wheel"
-      break
-    fi
   done
+  # Second pass: fallbacks if no explicit ns package was found
+  if [ -z "$PYDIR" ]; then
+    for base in "$HOME"/ns-* "$HOME"/ns-allinone* "$HOME"/Downloads/ns-* "$PWD"/ns-3; do
+      [ -z "$base" ] && continue
+      if [ -d "$base/bindings/python" ]; then
+        PYDIR="$base/bindings/python"
+        break
+      fi
+      if [ -d "$base/build/bindings/python" ]; then
+        PYDIR="$base/build/bindings/python"
+        break
+      fi
+      if [ -d "$base/build-support/pip-wheel" ]; then
+        # pip-wheel may contain a top-level 'ns' directory
+        PYDIR="$base/build-support/pip-wheel"
+        break
+      fi
+    done
+  fi
 fi
 
 if [ -n "$PYDIR" ]; then
