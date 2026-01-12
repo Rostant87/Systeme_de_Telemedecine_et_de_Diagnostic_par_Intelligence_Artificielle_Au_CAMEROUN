@@ -22,6 +22,15 @@ else
   PYDIR=""
   for base in "$HOME"/ns-* "$HOME"/ns-allinone* "$HOME"/Downloads/ns-* "$PWD"/ns-3; do
     [ -z "$base" ] && continue
+    # Prefer explicit ns package dir with __init__.py
+    if [ -f "$base/build/bindings/python/ns/__init__.py" ]; then
+      PYDIR="$base/build/bindings/python"
+      break
+    fi
+    if [ -f "$base/bindings/python/ns/__init__.py" ]; then
+      PYDIR="$base/bindings/python"
+      break
+    fi
     if [ -d "$base/bindings/python" ]; then
       PYDIR="$base/bindings/python"
       break
