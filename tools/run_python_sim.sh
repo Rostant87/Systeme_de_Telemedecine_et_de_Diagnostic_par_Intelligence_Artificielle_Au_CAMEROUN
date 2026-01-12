@@ -45,6 +45,27 @@ else
   echo "Warning: ns-3 python bindings not automatically found. If you have an ns-3 installation, set NS3_PYTHON_PATH to its bindings/python directory or build ns-3 with Python bindings." >&2
 fi
 
+# Try to find the corresponding ns-3 build lib directory (contains compiled .so libs)
+LIBDIR=""
+if [ -n "$PYDIR" ]; then
+  # e.g., /home/user/ns-3-dev/bindings/python -> build/lib at /home/user/ns-3-dev/build/lib
+  base_dir=$(dirname "$PYDIR")
+  candidate="$base_dir/build/lib"
+  if [ -d "$candidate" ]; then
+    LIBDIR="$candidate"
+  else
+    # try one level up in case bindings path is slightly different
+    candidate2="$base_dir/../build/lib"
+    if [ -d "$candidate2" ]; then
+      LIBDIR="$candidate2"
+    fi
+  fi
+fi
+if [ -n "$LIBDIR" ]; then
+  echo "Using ns-3 build lib directory: $LIBDIR"
+  export LD_LIBRARY_PATH="$LIBDIR${LD_LIBRARY_PATH:+":$LD_LIBRARY_PATH"}"
+fi
+
 if python3 "$SIM"; then
   echo "Execution finished"
 else
