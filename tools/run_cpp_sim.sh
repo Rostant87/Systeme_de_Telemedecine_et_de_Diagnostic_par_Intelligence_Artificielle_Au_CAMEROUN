@@ -15,8 +15,25 @@ if [ ! -f "$SIM" ]; then
 fi
 
 if [ -z "${NS3_DIR:-}" ]; then
-  echo "Please set NS3_DIR to your ns-3 installation root (where ./waf is located)."
-  exit 4
+  # Try to auto-detect NS3_DIR by looking for a waf file in common locations
+  for candidate in "$HOME/ns-3-dev" "$HOME/ns-3-allinone" "$HOME/ns-allinone*" "$HOME/Downloads/ns-*" "$PWD/.."; do
+    [ -z "$candidate" ] && continue
+    if [ -f "$candidate/waf" ]; then
+      NS3_DIR="$candidate"
+      break
+    fi
+    # sometimes waf is located one level deeper
+    if [ -f "$candidate/ns-3*/waf" ]; then
+      NS3_DIR="$candidate"
+      break
+    fi
+  done
+  if [ -z "${NS3_DIR:-}" ]; then
+    echo "Please set NS3_DIR to your ns-3 installation root (where ./waf is located). Tried auto-detection and failed." >&2
+    exit 4
+  else
+    echo "Auto-detected NS3_DIR=$NS3_DIR"
+  fi
 fi
 
 if [ ! -f "$NS3_DIR/waf" ]; then
