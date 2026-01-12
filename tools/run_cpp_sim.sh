@@ -26,6 +26,11 @@ if [ -z "${NS3_DIR:-}" ]; then
     wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | head -n1 || true)
     if [ -n "$wafpath" ]; then
       candidate_dir=$(dirname "$wafpath")
+      # prefer paths that contain 'ns-3' in the name
+      if [[ "$candidate_dir" == *ns-3* ]]; then
+        NS3_DIR="$candidate_dir"
+        break
+      fi
       # verify this looks like an ns-3 root (has scratch, src or wscript)
       if [ -d "$candidate_dir/scratch" ] || [ -f "$candidate_dir/wscript" ] || [ -d "$candidate_dir/src" ]; then
         NS3_DIR="$candidate_dir"
