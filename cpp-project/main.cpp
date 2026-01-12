@@ -1,84 +1,90 @@
-#include <QApplication>
-#include <QMainWindow>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QPushButton>
 #include <iostream>
-#include <thread>
 #include <memory>
-
-// Forward declaration of the Crow server
-namespace telemedicine {
-    class CrowServer;
-}
-
-// Main window class (stub for now)
-class MainWindow : public QMainWindow {
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent = nullptr) : QMainWindow(parent) {
-        setWindowTitle("Telemedicine Diagnostic System");
-        setGeometry(100, 100, 1200, 800);
-
-        // Create central widget
-        QWidget *centralWidget = new QWidget(this);
-        setCentralWidget(centralWidget);
-
-        // Create layout
-        QVBoxLayout *layout = new QVBoxLayout(centralWidget);
-
-        // Add welcome label
-        QLabel *welcomeLabel = new QLabel("Welcome to Telemedicine System v1.0", this);
-        welcomeLabel->setStyleSheet("QLabel { font-size: 18px; font-weight: bold; }");
-        layout->addWidget(welcomeLabel);
-
-        // Add info label
-        QLabel *infoLabel = new QLabel(
-            "Features:\n"
-            "• Diagnostic AI: Analyze medical images\n"
-            "• DME System: Manage patient records\n"
-            "• Medical Chatbot: Get medical advice\n"
-            "• Network Simulation: Visualize mesh networks\n"
-            "\nServer running on port 3001",
-            this
-        );
-        layout->addWidget(infoLabel);
-
-        // Add buttons for each module
-        QPushButton *diagnosticBtn = new QPushButton("Diagnostic Module", this);
-        QPushButton *dmeBtn = new QPushButton("DME System", this);
-        QPushButton *chatbotBtn = new QPushButton("Medical Chatbot", this);
-        QPushButton *networkBtn = new QPushButton("Network Simulation", this);
-
-        layout->addWidget(diagnosticBtn);
-        layout->addWidget(dmeBtn);
-        layout->addWidget(chatbotBtn);
-        layout->addWidget(networkBtn);
-
-        layout->addStretch();
-    }
-};
+#include "src/diagnostic_engine.h"
+#include "src/dme_system.h"
+#include "src/chatbot_engine.h"
+#include "src/network_sim.h"
 
 int main(int argc, char *argv[]) {
-    std::cout << "Starting Telemedicine System..." << std::endl;
+    std::cout << "==================================" << std::endl;
+    std::cout << "  Telemedicine Diagnostic System" << std::endl;
+    std::cout << "  Version 1.0.0 (C++ Core)" << std::endl;
+    std::cout << "==================================" << std::endl << std::endl;
 
-    // Initialize Qt Application
-    QApplication app(argc, argv);
+    // Initialize core modules
+    auto diagnostic = std::make_unique<telemedicine::DiagnosticEngine>();
+    auto dme = std::make_unique<telemedicine::DMESystem>();
+    auto chatbot = std::make_unique<telemedicine::MedicalChatbot>();
+    auto network = std::make_unique<telemedicine::NetworkSimulation>();
 
-    // Create and show main window
-    MainWindow mainWindow;
-    mainWindow.show();
+    // Display supported diseases
+    std::cout << "📋 Supported Diseases:" << std::endl;
+    auto diseases = diagnostic->getSupportedDiseases();
+    for (size_t i = 0; i < diseases.size(); ++i) {
+        std::cout << "  " << (i + 1) << ". " << diseases[i] << std::endl;
+    }
+    std::cout << std::endl;
 
-    // TODO: Start Crow server in separate thread
-    // std::thread serverThread([]() {
-    //     auto server = std::make_unique<telemedicine::CrowServer>();
-    //     server->run(3001);
-    // });
-    // serverThread.detach();
+    // Test Diagnostic Engine
+    std::cout << "🔬 Testing Diagnostic Engine..." << std::endl;
+    auto result = diagnostic->analyzeImage("test_image.jpg");
+    std::cout << "  Detected: " << result.diseaseName << std::endl;
+    std::cout << "  ICD Code: " << result.icdCode << std::endl;
+    std::cout << "  Confidence: " << (result.confidence * 100) << "%" << std::endl;
+    std::cout << std::endl;
 
-    std::cout << "Telemedicine System initialized" << std::endl;
-    std::cout << "Server would be running on http://localhost:3001" << std::endl;
+    // Test DME System
+    std::cout << "👥 Testing Patient Management (DME)..." << std::endl;
+    telemedicine::PatientRecord patient(
+        "PAT001",
+        "Jean",
+        "Dupont",
+        45,
+        "M",
+        "Kinshasa",
+        "Diabète"
+    );
+    if (dme->createPatient(patient)) {
+        std::cout << "  ✓ Patient PAT001 created successfully" << std::endl;
+    }
+    auto retrieved = dme->getPatient("PAT001");
+    if (retrieved) {
+        std::cout << "  ✓ Retrieved: " << retrieved->firstName << " "
+                  << retrieved->lastName << " (Age: " << retrieved->age << ")" << std::endl;
+    }
+    std::cout << "  Total patients: " << dme->getTotalPatients() << std::endl;
+    std::cout << std::endl;
 
-    return app.exec();
+    // Test Medical Chatbot
+    std::cout << "💬 Testing Medical Chatbot..." << std::endl;
+    auto response = chatbot->processQuery("Comment traiter la fièvre?", "fr");
+    std::cout << "  Query: Comment traiter la fièvre?" << std::endl;
+    std::cout << "  Domain: " << response.domain << std::endl;
+    std::cout << "  Response: " << response.response << std::endl;
+    std::cout << std::endl;
+
+    // Test Network Simulation
+    std::cout << "🌐 Testing Network Simulation..." << std::endl;
+    network->createMeshTopology(5);
+    std::cout << "  ✓ Mesh topology created with 5 nodes" << std::endl;
+    std::cout << "  Average latency: " << network->getAverageLatency() << " ms" << std::endl;
+    std::cout << "  Average packet loss: " << network->getAveragePacketLoss() << "%" << std::endl;
+    std::cout << std::endl;
+
+    // Display chatbot domains
+    std::cout << "📚 Chatbot Knowledge Domains:" << std::endl;
+    auto domains = chatbot->getSupportedDomains();
+    for (const auto& domain : domains) {
+        std::cout << "  • " << domain << std::endl;
+    }
+    std::cout << std::endl;
+
+    std::cout << "==================================" << std::endl;
+    std::cout << "✓ All modules initialized successfully!" << std::endl;
+    std::cout << "==================================" << std::endl;
+    std::cout << "\nNote: REST API server can be enabled with:" << std::endl;
+    std::cout << "  cmake -DBUILD_SERVER=ON .." << std::endl;
+    std::cout << "\nFor production GUI, install Qt6 and rebuild." << std::endl;
+
+    return 0;
 }

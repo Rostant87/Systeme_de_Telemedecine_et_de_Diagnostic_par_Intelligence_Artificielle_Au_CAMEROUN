@@ -4,30 +4,33 @@ project(TelemedicineDiagnosticsAI CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Find Qt components
-find_package(Qt6 COMPONENTS Core Gui Widgets Network REQUIRED)
+# Optional: Find Qt components (for GUI)
+find_package(Qt6 COMPONENTS Core Gui Widgets Network QUIET)
 
-# Find TensorFlow Lite (optional, for AI diagnostics)
+# Optional: Find TensorFlow Lite (for AI diagnostics)
 find_package(TensorFlowLite QUIET)
 
 # Add subdirectories
 add_subdirectory(src)
-add_subdirectory(server)
 
-# Main application
+# Only add server if building
+option(BUILD_SERVER "Build REST API server with Crow" OFF)
+if(BUILD_SERVER)
+    add_subdirectory(server)
+endif()
+
+# Main application (console version without Qt)
 add_executable(telemedicine_app
     main.cpp
 )
 
 target_link_libraries(telemedicine_app
     PRIVATE
-    telemedicine_ui
-    telemedicine_server
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
-    Qt6::Network
+    telemedicine_core
 )
+
+# Compile with optimizations
+target_compile_options(telemedicine_app PRIVATE -O3 -Wall -Wextra)
 
 # Optional: link TensorFlow Lite if available
 if(TensorFlowLite_FOUND)
