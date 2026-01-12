@@ -25,8 +25,18 @@ if [ -z "${NS3_DIR:-}" ]; then
     # search up to 3 levels deep for a waf executable inside likely ns-3 installs
     wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | head -n1 || true)
     if [ -n "$wafpath" ]; then
-      NS3_DIR=$(dirname "$wafpath")
-      break
+      candidate_dir=$(dirname "$wafpath")
+      # verify this looks like an ns-3 root (has scratch, src or wscript)
+      if [ -d "$candidate_dir/scratch" ] || [ -f "$candidate_dir/wscript" ] || [ -d "$candidate_dir/src" ]; then
+        NS3_DIR="$candidate_dir"
+        break
+      fi
+      # try parent dir as some installs nest ns-3 one level up
+      parent=$(dirname "$candidate_dir")
+      if [ -d "$parent/scratch" ] || [ -f "$parent/wscript" ] || [ -d "$parent/src" ]; then
+        NS3_DIR="$parent"
+        break
+      fi
     fi
   done
   if [ -z "${NS3_DIR:-}" ]; then
