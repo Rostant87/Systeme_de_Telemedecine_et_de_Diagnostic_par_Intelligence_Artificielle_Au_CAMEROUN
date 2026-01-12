@@ -16,15 +16,16 @@ fi
 
 if [ -z "${NS3_DIR:-}" ]; then
   # Try to auto-detect NS3_DIR by looking for a waf file in common locations
-  for candidate in "$HOME/ns-3-dev" "$HOME/ns-3-allinone" "$HOME/ns-allinone*" "$HOME/Downloads/ns-*" "$PWD/.."; do
+  for candidate in "$HOME" "$HOME/ns-*" "$HOME/ns-allinone*" "$HOME/Downloads/ns-*" "$PWD/.."; do
     [ -z "$candidate" ] && continue
     if [ -f "$candidate/waf" ]; then
       NS3_DIR="$candidate"
       break
     fi
-    # sometimes waf is located one level deeper
-    if [ -f "$candidate/ns-3*/waf" ]; then
-      NS3_DIR="$candidate"
+    # search up to 3 levels deep for a waf executable inside likely ns-3 installs
+    wafpath=$(find "$candidate" -maxdepth 3 -type f -name waf 2>/dev/null | head -n1 || true)
+    if [ -n "$wafpath" ]; then
+      NS3_DIR=$(dirname "$wafpath")
       break
     fi
   done
