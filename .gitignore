@@ -1,1 +1,25 @@
-node_modules
+# Build directories
+build/
+cmake-cache/
+*.o
+*.a
+*.so
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.tmp
+*.bak
+*~
+
+# ns-3 specific
+.waf-*
+.lock*
