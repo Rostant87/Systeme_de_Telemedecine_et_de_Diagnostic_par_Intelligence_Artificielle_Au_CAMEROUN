@@ -4,16 +4,7 @@
 
 - Ubuntu ou Linux
 - ns-3.46.1 installé à `/home/rostant/Desktop/ns-3-allinone/ns-3.46.1`
-- NetAnim (optionnel, pour la visualisation)
-
-## Installation rapide
-
-Installer NetAnim sur Ubuntu:
-
-```bash
-sudo apt update
-sudo apt install netanim
-```
+- NetAnim (inclus avec ns-3 - aucune installation nécessaire)
 
 ## Utilisation
 
@@ -59,11 +50,8 @@ La simulation montre:
 
 **NetAnim ne se lance pas:**
 ```bash
-# Installer NetAnim
-sudo apt install netanim
-
-# Ou lancer manuellement
-NetAnim simulation/output/telemed-cameroon-national.xml
+# Lancer NetAnim manuellement
+/home/rostant/Desktop/ns-3-allinone/netanim/build/netanim simulation/output/telemed-cameroon-national.xml
 ```
 
 **Erreur de compilation:**

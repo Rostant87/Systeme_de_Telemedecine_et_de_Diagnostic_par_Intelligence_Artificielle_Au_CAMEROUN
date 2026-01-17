@@ -52,18 +52,23 @@ visualize_simulation() {
     
     echo "Ouverture de NetAnim..."
     
+    # Chemin NetAnim dans ns-3
+    NETANIM_BINARY="/home/rostant/Desktop/ns-3-allinone/netanim/build/netanim"
+    
     # Essayer plusieurs chemins possibles pour NetAnim
-    if command -v NetAnim &> /dev/null; then
+    if [ -f "$NETANIM_BINARY" ]; then
+        "$NETANIM_BINARY" "$XML_FILE" &
+    elif command -v NetAnim &> /dev/null; then
         NetAnim "$XML_FILE" &
-    elif [ -f "$NS3_PATH/NetAnim" ]; then
-        "$NS3_PATH/NetAnim" "$XML_FILE" &
     else
-        NETANIM_PATH=$(find /usr -name "NetAnim" -type f 2>/dev/null | head -1)
+        NETANIM_PATH=$(find /usr -name "netanim" -type f 2>/dev/null | head -1)
         if [ -n "$NETANIM_PATH" ]; then
             "$NETANIM_PATH" "$XML_FILE" &
         else
-            echo "NetAnim non trouvé"
-            echo "Fichier disponible à: $XML_FILE"
+            echo "NetAnim non trouvé sur le système"
+            echo "Fichier animation disponible à: $XML_FILE"
+            echo "Vous pouvez le visualiser manuellement avec:"
+            echo "  /home/rostant/Desktop/ns-3-allinone/netanim/build/netanim $XML_FILE"
             exit 1
         fi
     fi
