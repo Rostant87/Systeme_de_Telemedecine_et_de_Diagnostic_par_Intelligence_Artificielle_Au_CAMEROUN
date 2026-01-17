@@ -274,7 +274,7 @@ int main(int argc, char *argv[]) {
                 Ipv4Address centerIp = regionHealthCenterIps[regionPair.first];
                 UdpEchoClientHelper asrToHealthClient(centerIp, healthServerPort);
                 asrToHealthClient.SetAttribute("MaxPackets", UintegerValue(10000));
-                asrToHealthClient.SetAttribute("Interval", TimeValue(Seconds(1.0 + 0.2*i)));
+                asrToHealthClient.SetAttribute("Interval", TimeValue(Seconds(1.2 + 0.2*i)));
                 asrToHealthClient.SetAttribute("PacketSize", UintegerValue(256 + i*50));
                 ApplicationContainer asrApp = asrToHealthClient.Install(region.asr.Get(i));
                 asrApp.Start(Seconds(1.0 + 0.1*i));
@@ -430,7 +430,10 @@ int main(int argc, char *argv[]) {
 
     AnimationInterface anim("/home/rostant/Desktop/ns-3-allinone/ns-3.46.1/build/telemed-cameroon-national.xml");
     anim.EnablePacketMetadata(true);
-
+    
+    // Configuration pour animation progressive des paquets
+    anim.SetMaxPktsPerTraceFile(500000);
+    
     std::string resourcePath = "/home/rostant/Desktop/ns-3-allinone/netanim/";
     
     // Chargement des images
